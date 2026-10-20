@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#111827">
+<meta name="description" content="Turn real-life workouts into RPG quests. Earn XP, level up, and unlock rewards.">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>Workout Warrior RPG</title>
+<style>
+:root{--bg:#0b1020;--panel:#151d31;--panel2:#202b43;--text:#f4f7ff;--muted:#a9b6ce;--green:#65e6a5;--gold:#ffd166;--blue:#79aaff;--line:#34415b}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#1b2a49 0,#0b1020 58%);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100vh}
+main{max-width:760px;margin:auto;padding:18px 14px 44px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}.brand{font-weight:900;letter-spacing:.04em;font-size:1.1rem}.tag{color:var(--green);font-size:.78rem;font-weight:800}
+.panel{background:rgba(21,29,49,.96);border:1px solid var(--line);border-radius:20px;padding:18px;margin-bottom:14px;box-shadow:0 12px 30px #0002}
+.hero{display:grid;grid-template-columns:90px 1fr;gap:16px;align-items:center}.avatar{width:90px;height:90px;border-radius:22px;background:linear-gradient(145deg,#243b70,#19223b);display:grid;place-items:center;font-size:3.2rem;border:1px solid #4a6190}
+.eyebrow{font-size:.72rem;color:var(--muted);font-weight:800;letter-spacing:.12em}.level{font-size:2rem;line-height:1.2;font-weight:950;margin:3px 0}.subtitle{color:var(--muted);font-size:.9rem}.bar{height:12px;background:#303b53;border-radius:20px;overflow:hidden;margin:12px 0 5px}.fill{height:100%;width:0;background:linear-gradient(90deg,#45d991,#c1ff91);border-radius:20px;transition:width .25s}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:15px}.stat{background:var(--panel2);padding:12px;border-radius:14px;text-align:center}.stat b{display:block;font-size:1.25rem}.stat span{color:var(--muted);font-size:.78rem}
+h2{font-size:1.18rem;margin:0 0 5px}.section-note{color:var(--muted);font-size:.88rem;margin:0 0 13px}.quest{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:15px;margin-bottom:11px}.questhead{display:flex;gap:10px;align-items:center}.day{background:#263652;border-radius:11px;min-width:53px;text-align:center;padding:9px 6px;font-weight:900;color:var(--blue);font-size:.8rem}.qtitle{font-weight:850}.qdesc{color:var(--muted);font-size:.8rem}.xp{margin-left:auto;color:var(--gold);font-weight:900;font-size:.85rem;white-space:nowrap}.tasks{padding:13px 0 2px;display:grid;gap:9px}.task{display:flex;gap:10px;align-items:flex-start;color:#e8eefb;font-size:.93rem}.task input{accent-color:var(--green);width:19px;height:19px;margin:1px 0 0;flex-shrink:0}.task.done span{text-decoration:line-through;color:var(--muted)}button{font:inherit;font-weight:800;border:0;border-radius:12px;padding:12px 14px;cursor:pointer}.claim{width:100%;margin-top:12px;background:var(--green);color:#092317}.claim:disabled{background:#2d3b4e;color:#aab7ca;cursor:not-allowed}.smallbtn{background:var(--panel2);color:var(--text);border:1px solid var(--line);padding:9px 11px;font-size:.82rem}.reward{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}.reward:last-child{border:0}.rewardicon{font-size:1.7rem}.rewardinfo{flex:1}.rewardinfo b{display:block}.rewardinfo span{font-size:.8rem;color:var(--muted)}.status{font-size:.75rem;color:var(--muted);font-weight:800}.status.unlocked{color:var(--green)}.bottom{color:var(--muted);font-size:.78rem;line-height:1.5;padding:4px 3px}.actions{display:flex;gap:8px;flex-wrap:wrap}.notice{color:var(--green);font-size:.86rem;min-height:1.2em;margin-top:8px}
+@media(max-width:420px){.hero{grid-template-columns:70px 1fr}.avatar{width:70px;height:70px;font-size:2.5rem}.level{font-size:1.7rem}.panel{padding:15px}.xp{font-size:.78rem}}
+</style>
+</head>
+<body>
+<main>
+  <div class="top"><div class="brand">⚔️ WORKOUT WARRIOR</div><div class="tag">REAL LIFE RPG</div></div>
+  <section class="panel">
+    <div class="hero">
+      <div class="avatar" aria-hidden="true">🛡️</div>
+      <div><div class="eyebrow">PLAYER PROFILE</div><div class="level">LEVEL <span id="level">1</span></div><div class="subtitle"><span id="totalxp">0</span> total XP · <span id="nextxp">300</span> XP to next level</div></div>
+    </div>
+    <div class="bar"><div class="fill" id="xpfill"></div></div>
+    <div class="subtitle" id="progresslabel">0 / 300 XP toward your next level</div>
+    <div class="stats">
+      <div class="stat"><b id="strength">1</b><span>💪 Strength</span></div>
+      <div class="stat"><b id="stamina">1</b><span>⚡ Stamina</span></div>
+      <div class="stat"><b id="completed">0</b><span>🏆 Quests</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>🗺️ Daily Quest Board</h2>
+    <p class="section-note">Check off each task as you finish it. Complete a quest to claim its XP. Progress saves on this device.</p>
+    <div id="quests"></div>
+  </section>
+
+  <section class="panel">
+    <h2>🏆 Level Rewards</h2>
+    <p class="section-note">Unlock fun rewards as your level grows.</p>
+    <div id="rewards"></div>
+  </section>
+  <section class="panel">
+    <h2>⚙️ Player Settings</h2>
+    <p class="section-note">Your progress is saved in this browser on this device.</p>
+    <div class="actions"><button class="smallbtn" id="reset">Reset all progress</button></div>
+    <div class="notice" id="notice" role="status"></div>
+  </section>
+  <div class="bottom">Safety tip: Start gently, use good form, and rest when you need to. Stop if you feel pain, dizziness, or unwell. You can do fewer reps or easier versions. Rest and recovery count as part of training.</div>
+</main>
+<script>
+const quests = [
+ {day:"MON",name:"Strength Training",desc:"Train your upper body",xp:100,tasks:["8 push-ups (wall or knees are okay)","10 squats","20-second plank (or shorter)"]},
+ {day:"TUE",name:"Leg Day",desc:"Build lower-body strength",xp:100,tasks:["12 comfortable squats","8 reverse lunges per leg (hold a wall if needed)","15 calf raises"]},
+ {day:"WED",name:"Stamina Quest",desc:"Move at a comfortable pace",xp:100,tasks:["15 minutes of walking, biking, dancing, or a sport"]},
+ {day:"THU",name:"Core Training",desc:"Practice balance and control",xp:100,tasks:["10 crunches or dead bugs","20-second plank (or shorter)","10 dead bugs per side"]},
+ {day:"FRI",name:"Full-Body Boss Fight",desc:"A little bit of everything",xp:150,tasks:["8 push-ups (choose an easy version)","12 squats","10 light backpack rows or shoulder-blade squeezes"]},
+ {day:"SAT",name:"Adventure Quest",desc:"Pick an activity you enjoy",xp:100,tasks:["20 minutes of a sport, biking, walking, or dancing"]},
+ {day:"SUN",name:"Recovery Quest",desc:"Rest helps your character grow",xp:50,tasks:["Take a rest day or do gentle stretching","Get ready for next week's quests"]}
+];
+const rewards=[
+ {level:2,name:"Rookie Warrior",desc:"Choose a new song for your workout",icon:"🎵"},
+ {level:3,name:"Iron Fighter",desc:"Unlock a new exercise challenge",icon:"⚔️"},
+ {level:5,name:"Elite Athlete",desc:"Try a new sport or activity",icon:"🏅"},
+ {level:10,name:"Legendary Warrior",desc:"Celebrate your consistency with a special reward",icon:"👑"}
+];
+const STORE="workoutWarriorRPG_v1";
+let state={xp:0,claimed:[],checks:{}};
+try { const saved=JSON.parse(localStorage.getItem(STORE)); if(saved&&typeof saved.xp==="number"){state={...state,...saved};} } catch(e){}
+const $=id=>document.getElementById(id);
+function save(){try{localStorage.setItem(STORE,JSON.stringify(state));}catch(e){}}
+function currentLevel(){return Math.floor(state.xp/300)+1;}
+function renderProfile(){
+ const level=currentLevel(),progress=state.xp%300;
+ $("level").textContent=level;$("totalxp").textContent=state.xp;$("nextxp").textContent=300-progress;
+ $("xpfill").style.width=(progress/300*100)+"%";$("progresslabel").textContent=`${progress} / 300 XP toward your next level`;
+ $("strength").textContent=1+Math.floor(state.xp/200);$("stamina").textContent=1+Math.floor(state.xp/250);$("completed").textContent=state.claimed.length;
+}
+function renderQuests(){
+ const today=(new Date().getDay()+6)%7;
+ $("quests").innerHTML=quests.map((q,i)=>{
+ const claimed=state.claimed.includes(i),checks=state.checks[i]||[];
+ const all=checks.length===q.tasks.length;
+ const tasks=q.tasks.map((t,j)=>`<label class="task ${checks.includes(j)?"done":""}"><input type="checkbox" data-quest="${i}" data-task="${j}" ${checks.includes(j)?"checked":""} ${claimed?"disabled":""}><span>${t}</span></label>`).join("");
+ return `<article class="quest"><div class="questhead"><div class="day">${q.day}${i===today?" · TODAY":""}</div><div><div class="qtitle">${q.name}</div><div class="qdesc">${q.desc}</div></div><div class="xp">+${q.xp} XP</div></div><div class="tasks">${tasks}</div><button class="claim" data-claim="${i}" ${claimed||!all?"disabled":""}>${claimed?"✓ Quest completed":all?`Claim ${q.xp} XP`:"Complete all tasks to claim XP"}</button></article>`;
+ }).join("");
+ $("quests").querySelectorAll('input[type="checkbox"]').forEach(el=>el.addEventListener("change",e=>{
+  const i=+e.target.dataset.quest,j=+e.target.dataset.task;let arr=state.checks[i]||[];
+  arr=e.target.checked?[...new Set([...arr,j])]:arr.filter(n=>n!==j);state.checks[i]=arr;save();renderQuests();
+ }));
+ $("quests").querySelectorAll("[data-claim]").forEach(el=>el.addEventListener("click",()=>{
+  const i=+el.dataset.claim,q=quests[i],checks=state.checks[i]||[];
+  if(state.claimed.includes(i)||checks.length!==q.tasks.length)return;
+  const oldLevel=currentLevel();state.xp+=q.xp;state.claimed.push(i);save();render();$("notice").textContent=currentLevel()>oldLevel?`🎉 LEVEL UP! You reached Level ${currentLevel()}!`:`+${q.xp} XP earned! Quest complete!`;
+ }));
+}
+function renderRewards(){
+ $("rewards").innerHTML=rewards.map(r=>{const unlocked=currentLevel()>=r.level;return `<div class="reward"><div class="rewardicon">${unlocked?r.icon:"🔒"}</div><div class="rewardinfo"><b>${r.name}</b><span>${r.desc}</span></div><div class="status ${unlocked?"unlocked":""}">${unlocked?"UNLOCKED":"LVL "+r.level}</div></div>`}).join("");
+}
+function render(){renderProfile();renderQuests();renderRewards();}
+$("reset").addEventListener("click",()=>{if(confirm("Reset your XP, levels, and all quest progress? This cannot be undone.")){state={xp:0,claimed:[],checks:{}};save();render();$("notice").textContent="Progress reset. Your next adventure starts now!";}});
+render();
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./service-worker.js").catch(err => {
+      console.log("Offline setup could not be enabled:", err);
+    });
+  });
+}
+</script>
+</body>
+</html>
